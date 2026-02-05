@@ -1,11 +1,598 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiêu đề trang</title>
-</head>
-<body>
-    <h1>Chào mừng đến với website</h1>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Quản lý sinh viên (Nhóm 9)</title>
+		<style>
+			:root {
+				color-scheme: light;
+				--bg: #f5f7fb;
+				--card: #ffffff;
+				--text: #0f172a;
+				--muted: #64748b;
+				--primary: #2563eb;
+				--ring: rgba(37, 99, 235, 0.15);
+				--border: #e2e8f0;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				background: var(--bg);
+				color: var(--text);
+			}
+
+			.page {
+				max-width: 1100px;
+				margin: 0 auto;
+				padding: 32px 20px 60px;
+			}
+
+			header {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+				margin-bottom: 24px;
+			}
+
+			header h1 {
+				margin: 0;
+				font-size: 28px;
+			}
+
+			header p {
+				margin: 0;
+				color: var(--muted);
+			}
+
+			.toolbar {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 12px;
+				margin-top: 16px;
+			}
+
+			.toolbar input {
+				flex: 1 1 260px;
+				padding: 12px 14px;
+				border-radius: 12px;
+				border: 1px solid var(--border);
+				background: var(--card);
+				outline: none;
+				font-size: 14px;
+				box-shadow: 0 0 0 3px transparent;
+				transition: box-shadow 0.2s ease, border-color 0.2s ease;
+			}
+
+			.toolbar input:focus {
+				border-color: var(--primary);
+				box-shadow: 0 0 0 4px var(--ring);
+			}
+
+			.toolbar button {
+				padding: 12px 18px;
+				border-radius: 12px;
+				border: none;
+				background: var(--primary);
+				color: #fff;
+				font-weight: 600;
+				cursor: pointer;
+				transition: transform 0.15s ease, box-shadow 0.2s ease;
+				box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+			}
+
+			.toolbar button:active {
+				transform: scale(0.98);
+			}
+
+			.status {
+				margin-top: 12px;
+				color: var(--muted);
+			}
+
+			.form-card {
+				margin-top: 20px;
+				background: var(--card);
+				border: 1px solid var(--border);
+				border-radius: 18px;
+				padding: 18px;
+				box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+				display: grid;
+				gap: 14px;
+			}
+
+			.form-grid {
+				display: grid;
+				gap: 12px;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+			}
+
+			.form-field {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+				font-size: 13px;
+				color: var(--muted);
+			}
+
+			.form-field input {
+				padding: 10px 12px;
+				border-radius: 12px;
+				border: 1px solid var(--border);
+				font-size: 14px;
+				outline: none;
+				transition: border-color 0.2s ease, box-shadow 0.2s ease;
+			}
+
+			.form-field input:focus {
+				border-color: var(--primary);
+				box-shadow: 0 0 0 4px var(--ring);
+			}
+
+			.form-actions {
+                margin-top: 10px;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px;
+			}
+
+			.btn {
+				padding: 10px 16px;
+				border-radius: 12px;
+				border: none;
+				font-weight: 600;
+				cursor: pointer;
+			}
+
+			.btn-primary {
+				background: var(--primary);
+				color: #fff;
+				box-shadow: 0 8px 16px rgba(37, 99, 235, 0.2);
+			}
+
+			.btn-secondary {
+				background: #e2e8f0;
+				color: #0f172a;
+			}
+
+			.btn-outline {
+				background: transparent;
+				border: 1px solid var(--border);
+				color: var(--text);
+			}
+
+			.action-group {
+				display: flex;
+				gap: 8px;
+			}
+
+			.action-button {
+				padding: 6px 10px;
+				border-radius: 8px;
+				border: 1px solid var(--border);
+				background: #fff;
+				cursor: pointer;
+				font-size: 12px;
+			}
+
+			.action-button.edit {
+				color: #1d4ed8;
+				border-color: rgba(29, 78, 216, 0.3);
+			}
+
+			.action-button.delete {
+				color: #b91c1c;
+				border-color: rgba(185, 28, 28, 0.3);
+			}
+
+			.table-wrapper {
+				margin-top: 24px;
+				background: var(--card);
+				border: 1px solid var(--border);
+				border-radius: 18px;
+				box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+				overflow: hidden;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+
+			thead {
+				background: #eef2ff;
+			}
+
+			th,
+			td {
+				text-align: left;
+				padding: 14px 16px;
+				border-bottom: 1px solid var(--border);
+				font-size: 14px;
+			}
+
+			th {
+				font-weight: 700;
+				color: var(--text);
+			}
+
+			tbody tr:hover {
+				background: #f8fafc;
+			}
+
+			.avatar {
+				width: 48px;
+				height: 48px;
+				border-radius: 50%;
+				object-fit: cover;
+				border: 2px solid #fff;
+				box-shadow: 0 6px 12px rgba(15, 23, 42, 0.12);
+			}
+
+			.name {
+				font-weight: 600;
+			}
+
+			.meta {
+				color: var(--muted);
+			}
+
+			.badge {
+				display: inline-block;
+				padding: 6px 10px;
+				border-radius: 999px;
+				color: var(--primary);
+				font-weight: 600;
+				font-size: 12px;
+			}
+
+			.error {
+				color: #b91c1c;
+				background: #fee2e2;
+				padding: 12px 14px;
+				border-radius: 12px;
+				border: 1px solid #fecaca;
+				margin-top: 16px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<header>
+				<h1>Quản lý sinh viên (Nhóm 9)</h1>
+				<div class="toolbar">
+					<input id="searchInput" type="text" style="display: none;" placeholder="Tìm theo tên hoặc số điện thoại..." />
+					<button id="refreshButton" style="display: none;" type="button">Tải lại dữ liệu</button>
+				</div>
+				<div id="status" class="status">Đang khởi tạo...</div>
+			</header>
+
+			<section class="form-card" aria-labelledby="formTitle">
+				<h2 id="formTitle">Thêm / Cập nhật sinh viên</h2>
+				<form id="studentForm">
+					<input id="studentId" type="hidden" />
+					<div class="form-grid">
+						<label class="form-field">
+							Họ và tên
+							<input id="nameInput" type="text" placeholder="Nguyễn Văn A" required />
+						</label>
+						<label class="form-field">
+							Ảnh (URL)
+							<input id="avatarInput" type="url" placeholder="https://..." />
+						</label>
+						<label class="form-field">
+							Số điện thoại
+							<input id="phoneInput" type="text" placeholder="0901234567" />
+						</label>
+					</div>
+					<div class="form-actions">
+						<button id="submitButton" class="btn btn-primary" type="submit">Thêm sinh viên</button>
+						<button id="cancelButton" class="btn btn-outline" type="button" hidden>Hủy chỉnh sửa</button>
+						<button class="btn btn-secondary" type="reset">Làm mới</button>
+					</div>
+				</form>
+			</section>
+
+			<div id="error" class="error" hidden></div>
+			<div class="table-wrapper" aria-live="polite">
+				<table>
+					<thead>
+						<tr>
+							<th>Mã SV</th>
+							<th>Họ và tên</th>
+							<th>Ảnh</th>
+							<th>Số điện thoại</th>
+							<th>Thao tác</th>
+						</tr>
+					</thead>
+					<tbody id="grid"></tbody>
+				</table>
+			</div>
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/typescript@5.4.5/lib/typescript.min.js"></script>
+		<script id="ts-code" type="text/plain">
+			interface Student {
+				id: string;
+				name: string;
+				avatar: string;
+				phone: string;
+			}
+
+			const API_URL = "https://69844c82885008c00db0a495.mockapi.io/SinhVien";
+
+			const grid = document.getElementById("grid") as HTMLTableSectionElement;
+			const status = document.getElementById("status") as HTMLDivElement;
+			const errorBox = document.getElementById("error") as HTMLDivElement;
+			const searchInput = document.getElementById("searchInput") as HTMLInputElement;
+			const refreshButton = document.getElementById("refreshButton") as HTMLButtonElement;
+			const studentForm = document.getElementById("studentForm") as HTMLFormElement;
+			const studentId = document.getElementById("studentId") as HTMLInputElement;
+			const nameInput = document.getElementById("nameInput") as HTMLInputElement;
+			const avatarInput = document.getElementById("avatarInput") as HTMLInputElement;
+			const phoneInput = document.getElementById("phoneInput") as HTMLInputElement;
+			const submitButton = document.getElementById("submitButton") as HTMLButtonElement;
+			const cancelButton = document.getElementById("cancelButton") as HTMLButtonElement;
+
+			let students: Student[] = [];
+			let editingId: string | null = null;
+
+			const setStatus = (message: string) => {
+				status.textContent = message;
+			};
+
+			const showError = (message: string) => {
+				errorBox.textContent = message;
+				errorBox.hidden = false;
+			};
+
+			const clearError = () => {
+				errorBox.hidden = true;
+				errorBox.textContent = "";
+			};
+
+			const formatPhone = (phone: string) => phone.trim() || "Chưa cập nhật";
+			const defaultAvatar =
+				"https://cdn.jsdelivr.net/gh/faker-js/assets-person-portrait/male/512/41.jpg";
+
+			const resetForm = () => {
+				studentForm.reset();
+				studentId.value = "";
+				editingId = null;
+				submitButton.textContent = "Thêm sinh viên";
+				cancelButton.hidden = true;
+			};
+
+			const renderStudents = (data: Student[]) => {
+				grid.innerHTML = "";
+
+				if (data.length === 0) {
+					grid.innerHTML =
+						"<tr><td class=\"meta\" colspan=\"5\">Không tìm thấy sinh viên phù hợp.</td></tr>";
+					return;
+				}
+
+				const fragment = document.createDocumentFragment();
+
+				data.forEach((student) => {
+					const row = document.createElement("tr");
+
+					const avatarCell = document.createElement("td");
+					const avatar = document.createElement("img");
+					avatar.className = "avatar";
+					avatar.src = student.avatar || defaultAvatar;
+					avatar.alt = student.name;
+					avatarCell.appendChild(avatar);
+
+					const nameCell = document.createElement("td");
+					nameCell.className = "name";
+					nameCell.textContent = student.name;
+
+					const phoneCell = document.createElement("td");
+					phoneCell.className = "meta";
+					phoneCell.textContent = formatPhone(student.phone);
+
+					const idCell = document.createElement("td");
+					const badge = document.createElement("span");
+					badge.className = "badge";
+					badge.textContent = student.id;
+					idCell.appendChild(badge);
+
+					const actionCell = document.createElement("td");
+					const actionGroup = document.createElement("div");
+					actionGroup.className = "action-group";
+
+					const editButton = document.createElement("button");
+					editButton.className = "action-button edit";
+					editButton.type = "button";
+					editButton.textContent = "Sửa";
+					editButton.addEventListener("click", () => startEdit(student));
+
+					const deleteButton = document.createElement("button");
+					deleteButton.className = "action-button delete";
+					deleteButton.type = "button";
+					deleteButton.textContent = "Xóa";
+					deleteButton.addEventListener("click", () => handleDelete(student));
+
+					actionGroup.append(editButton, deleteButton);
+					actionCell.appendChild(actionGroup);
+
+					row.append(idCell, nameCell, avatarCell, phoneCell, actionCell);
+					fragment.appendChild(row);
+				});
+
+				grid.appendChild(fragment);
+			};
+
+			const filterStudents = () => {
+				const keyword = searchInput.value.trim().toLowerCase();
+				if (!keyword) {
+					renderStudents(students);
+					setStatus(`Đang hiển thị ${students.length} sinh viên.`);
+					return;
+				}
+
+				const filtered = students.filter((student) =>
+					student.name.toLowerCase().includes(keyword) || student.phone.toLowerCase().includes(keyword)
+				);
+
+				renderStudents(filtered);
+				setStatus(`Tìm thấy ${filtered.length} sinh viên.`);
+			};
+
+			const fetchStudents = async () => {
+				clearError();
+				setStatus("Đang tải dữ liệu...");
+				grid.innerHTML = "";
+
+				try {
+					const response = await fetch(API_URL);
+					if (!response.ok) {
+						throw new Error(`Lỗi tải dữ liệu: ${response.status}`);
+					}
+
+					const data = (await response.json()) as Student[];
+					students = data;
+					renderStudents(students);
+					setStatus(`Đang hiển thị ${students.length} sinh viên.`);
+				} catch (error) {
+					const message = error instanceof Error ? error.message : "Không thể tải dữ liệu.";
+					showError(message);
+					setStatus("Có lỗi xảy ra khi tải dữ liệu.");
+				}
+			};
+
+			const buildPayload = () => ({
+				name: nameInput.value.trim(),
+				avatar: avatarInput.value.trim() || defaultAvatar,
+				phone: phoneInput.value.trim(),
+			});
+
+			const createStudent = async () => {
+				const payload = buildPayload();
+				if (!payload.name) {
+					showError("Vui lòng nhập họ và tên sinh viên.");
+					return;
+				}
+
+				clearError();
+				setStatus("Đang thêm sinh viên...");
+				const response = await fetch(API_URL, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload),
+				});
+
+				if (!response.ok) {
+					throw new Error(`Lỗi tạo sinh viên: ${response.status}`);
+				}
+
+				resetForm();
+				await fetchStudents();
+			};
+
+			const updateStudent = async (id: string) => {
+				const payload = buildPayload();
+				if (!payload.name) {
+					showError("Vui lòng nhập họ và tên sinh viên.");
+					return;
+				}
+
+				clearError();
+				setStatus("Đang cập nhật sinh viên...");
+				const response = await fetch(`${API_URL}/${id}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload),
+				});
+
+				if (!response.ok) {
+					throw new Error(`Lỗi cập nhật sinh viên: ${response.status}`);
+				}
+
+				resetForm();
+				await fetchStudents();
+			};
+
+			const handleDelete = async (student: Student) => {
+				const confirmed = window.confirm(`Xóa sinh viên ${student.name}?`);
+				if (!confirmed) {
+					return;
+				}
+
+				try {
+					clearError();
+					setStatus("Đang xóa sinh viên...");
+					const response = await fetch(`${API_URL}/${student.id}`, { method: "DELETE" });
+					if (!response.ok) {
+						throw new Error(`Lỗi xóa sinh viên: ${response.status}`);
+					}
+
+					await fetchStudents();
+				} catch (error) {
+					const message = error instanceof Error ? error.message : "Không thể xóa dữ liệu.";
+					showError(message);
+					setStatus("Có lỗi xảy ra khi xóa dữ liệu.");
+				}
+			};
+
+			const startEdit = (student: Student) => {
+				editingId = student.id;
+				studentId.value = student.id;
+				nameInput.value = student.name;
+				avatarInput.value = student.avatar;
+				phoneInput.value = student.phone;
+				submitButton.textContent = "Lưu thay đổi";
+				cancelButton.hidden = false;
+				setStatus(`Đang chỉnh sửa sinh viên ${student.name}.`);
+			};
+
+			studentForm.addEventListener("submit", async (event) => {
+				event.preventDefault();
+				try {
+					if (editingId) {
+						await updateStudent(editingId);
+					} else {
+						await createStudent();
+					}
+				} catch (error) {
+					const message = error instanceof Error ? error.message : "Không thể lưu dữ liệu.";
+					showError(message);
+					setStatus("Có lỗi xảy ra khi lưu dữ liệu.");
+				}
+			});
+
+			studentForm.addEventListener("reset", () => {
+				resetForm();
+			});
+
+			cancelButton.addEventListener("click", resetForm);
+
+			searchInput.addEventListener("input", filterStudents);
+			refreshButton.addEventListener("click", fetchStudents);
+
+			fetchStudents();
+		</script>
+
+		<script type="module">
+			const tsCodeElement = document.getElementById("ts-code");
+			const tsCode = tsCodeElement?.textContent ?? "";
+			const result = window.ts.transpileModule(tsCode, {
+				compilerOptions: {
+					target: window.ts.ScriptTarget.ES2020,
+					module: window.ts.ModuleKind.ES2020,
+				},
+			});
+
+			const script = document.createElement("script");
+			script.type = "module";
+			script.textContent = result.outputText;
+			document.body.appendChild(script);
+		</script>
+	</body>
 </html>
